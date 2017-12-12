@@ -133,12 +133,21 @@ body {
     FixedQueue.unshift = FixedQueue.wrapMethod( "unshift", FixedQueue.trimTail );
     var airports = [];
     d3.csv("airports.csv", function(data) { airports = data;  });
+    d3.csv("flightdata.csv", function(data) { flightdata = data; });
     function getAirport(iata) { 
       for(i = 0; i < airports.length; i++){
         if (airports[i].iata == iata) { return airports[i]; }
       }
       return airports[0];
     }
+    function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
     function getRandomInt(min, max) {return Math.floor(Math.random() * (max - min + 1)) + min;}
     //console.log(data);
     //console.log(airports);
@@ -187,6 +196,26 @@ body {
         },
        getData: function() {
                 var self = this;
+
+                for (f = 0;f < flightdata.length; f++) {
+                    $('#flightsdiv').append("<div class='countList'>"+flightdata[f].from + " to " + flightdata[f].to + " " +
+                                     " <span style='color:green'>Date</span> " + flightdata[f].date + " " + flightdata[f].type +
+                                     " <span style='color:steelblue'>" + flightdata[f].success + "</span> </div>");
+               
+		hits.push( { origin : { latitude: getAirport(flightdata[f].from).latitude, longitude: getAirport(flightdata[f].from).longitude },
+                destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
+                map.arc(hits, {strokeWidth: 1, strokeColor: 'green'});
+                boom.push( { radius: 15, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
+                      fillOpacity: 1, attk: "bla bla"} );
+                map.bubbles(boom, {
+                   popupTemplate: function(geo, data) {
+                   return '<div class="hoverinfo">' + data.attk + '</div>';
+                } });
+
+                   sleep(3);
+                }
+               
+
                 randColor = getRandomInt(0, 3);
                 randAir = getRandomInt(0, 7000);
                 if (to_airport.lenght < 10) { to_airport == getAirport('KEF'); }
