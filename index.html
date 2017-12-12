@@ -1,0 +1,268 @@
+<html>
+<head>Bla</head>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+}
+#titlediv {
+  font-family: monospace;
+  text-align: center;
+  font-size:48px;
+  position:fixed;
+  width:100%;
+  height:50px;
+  color:white;
+  background-color:black;
+  padding:5px;
+  top:0px;
+  overflow-y: auto;
+}
+#attackdiv {
+  font-family: monospace;
+  font-size:10px;
+  position:fixed;
+  width:25%;
+  height:200px;
+  color:white;
+  background-color:black;
+  padding:5px;
+  bottom:0px;
+  overflow-y: auto;
+}
+#container2 {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width:100%;
+  max-height:100%
+}
+#about {
+  display: hidden;
+}
+#aboutdiv {
+  text-align:right;
+  width:100px;
+  height:100px;
+  top:0px;
+  right:0px;
+  position:fixed;
+  padding:10px;
+  color: white;
+}
+#ccdiv {
+  text-align:right;
+  width:100px;
+  height:20px;
+  bottom:0px;
+  right:0px;
+  position:fixed;
+  padding:5px;
+  color: white;
+}
+#about {display:none;}
+/* Overlay */
+#simplemodal-overlay {background-color:#000;}
+/* Container */
+#simplemodal-container {height:460px; width:600px; color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
+#simplemodal-container .simplemodal-data {padding:8px;}
+#simplemodal-container code {background:#141414; border-left:3px solid #65B43D; color:#bbb; display:block; font-size:12px; margin-bottom:12px; padding:4px 6px 6px;}
+#simplemodal-container a {color:#ddd;}
+#simplemodal-container a.modalCloseImg {background:url(../img/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
+#simplemodal-container h3 {color:#84b8d9;}
+#simplemodal-container a.modalCloseImg {
+  background:url(x.png) no-repeat; /* adjust url as required */
+  width:25px;
+  height:29px;
+  display:inline;
+  z-index:3200;
+  position:absolute;
+  top:-15px;
+  right:-18px;
+  cursor:pointer;
+}
+</style>
+
+<body>
+ <div id="attackdiv"></div>
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+  <!-- I recommend you host this file on your own, since this will change without warning -->
+  <script src="datamaps.world.min.js"></script>
+  <div id="container2" ></div>
+<script>
+    window.isActive = true;
+    $(window).focus(function() { this.isActive = true; });
+    $(window).blur(function() { this.isActive = false; });
+    // we maintain a fixed queue of "attacks" via this class
+    function FixedQueue( size, initialValues ){
+      initialValues = (initialValues || []);
+      var queue = Array.apply( null, initialValues );
+      queue.fixedSize = size;
+      queue.push = FixedQueue.push;
+      queue.splice = FixedQueue.splice;
+      queue.unshift = FixedQueue.unshift;
+      FixedQueue.trimTail.call( queue );
+      return( queue );
+    }
+    FixedQueue.trimHead = function(){
+      if (this.length <= this.fixedSize){ return; }
+      Array.prototype.splice.call( this, 0, (this.length - this.fixedSize) );
+    };
+    FixedQueue.trimTail = function(){
+      if (this.length <= this.fixedSize) { return; }
+      Array.prototype.splice.call( this, this.fixedSize, (this.length - this.fixedSize)
+      );
+    };
+    FixedQueue.wrapMethod = function( methodName, trimMethod ){
+      var wrapper = function(){
+        var method = Array.prototype[ methodName ];
+        var result = method.apply( this, arguments );
+        trimMethod.call( this );
+        return( result );
+      };
+      return( wrapper );
+    };
+    FixedQueue.push = FixedQueue.wrapMethod( "push", FixedQueue.trimHead );
+    FixedQueue.splice = FixedQueue.wrapMethod( "splice", FixedQueue.trimTail );
+    FixedQueue.unshift = FixedQueue.wrapMethod( "unshift", FixedQueue.trimTail );
+    var airports = [];
+    d3.csv("airports.csv", function(data) { airports = data;  });
+    function getAirport(iata) { 
+      for(i = 0; i < airports.length; i++){
+        if (airports[i].iata == iata) { return airports[i]; }
+      }
+      return airports[0];
+    }
+    function getRandomInt() {return Math.floor(Math.random() * (7000 - 0 + 1)) + 0;}
+    //console.log(data);
+    //console.log(airports);
+    //console.log(airports[0]);
+    var hits = FixedQueue( 10, [  ] );
+    var boom = FixedQueue( 10, [  ] );
+    var map = new Datamap({
+        scope: 'world',
+        element: document.getElementById('container2'),
+        projection: 'mercator',
+        fills: { defaultFill: 'black', },
+        geographyConfig: {
+          dataUrl: null,
+          hideAntarctica: true,
+          borderWidth: 0.75,
+          borderColor: '#4393c3',
+          popupTemplate: function(geography, data) {
+            return '<div class="hoverinfo" style="color:white;background:black">' +
+                   geography.properties.name + '</div>';
+          },
+          popupOnHover: true,
+          highlightOnHover: false,
+          highlightFillColor: 'black',
+          highlightBorderColor: 'rgba(250, 15, 160, 0.2)',
+          highlightBorderWidth: 2
+        },
+
+      })
+    map.bubbles([
+       {name: 'Demo WWW', latitude: 31.9952, longitude: -42.6494, radius: 40, fillKey: 'blue'},
+
+     ], {
+       popupTemplate: function(geo, data) {
+         return "<div class='hoverinfo'>It is " + data.name + "</div>";
+       }
+     })
+     var randAir = getRandomInt();
+     var to_airport = {};
+     var flights = {
+        interval: 2000,
+        init: function(){
+           setTimeout(
+               jQuery.proxy(this.getData, this),
+               this.interval
+           );
+        },
+       getData: function() {
+                var self = this;
+                
+                randAir = getRandomInt();
+                if (to_airport.lenght < 10) { to_airport == airports[randAir]; }
+		from_airport = to_airport;
+                to_airport = airports[randAir];
+                //to_airport = getAirport('BCN');
+ 		console.log(from_airport.city +" to " + to_airport.city);
+                var which_attack = from_airport.city +" to " + to_airport.city;
+                hits.push( { origin : { latitude: from_airport.latitude, longitude: from_airport.longitude },
+                destination : { latitude: to_airport.latitude, longitude: to_airport.longitude } } );
+                map.arc(hits, {strokeWidth: 2, strokeColor: 'red'});
+                boom.push( { radius: 7, latitude: from_airport.latitude, longitude: from_airport.longitude,
+                      fillOpacity: 0.5, attk: which_attack} );
+                map.bubbles(boom, {
+                   popupTemplate: function(geo, data) {
+                   return '<div class="hoverinfo">' + data.attk + '</div>';
+                } });
+                this.init() ;
+	},
+	};
+
+   
+
+    //var webSock = new WebSocket("ws:/127.0.0.1:8888/websocket");
+    //webSock.onmessage = function (e) {
+    console.log("Got a websocket message...");
+    try {
+        var msg = JSON.parse(e.data);
+        if (parseInt(msg.status) >= 200 && parseInt(msg.status) < 400) {
+            strokeColor = 'green';
+        } else if (parseInt(msg.status) >= 400 && parseInt(msg.status) <500) {
+            strokeColor = 'yellow';
+        } else if (parseInt(msg.status) >= 500) {
+            strokeColor = 'red';
+        } else {
+            strokeColor = 'blue';
+        }
+        if (window.isActive) {
+        var stroke = parseInt(msg.count) / 8 + 1;
+        //        console.log(stroke);
+        //if (stroke > 12) { stroke = 12; }
+        // Atlantic Ocean : 31.995200, -42.649487
+        var which_attack = msg.geo.country_name + " - " + msg.geo.city;
+        hits.push( { origin : { latitude: msg.geo.latitude, longitude: msg.geo.longitude },
+        destination : { latitude: 31.9952, longitude: -42.6494 } } );
+        map.arc(hits, {strokeWidth: stroke, strokeColor: strokeColor});
+        // add boom to the bubbles queue
+        boom.push( { radius: 7, latitude: msg.geo.latitude, longitude: msg.geo.longitude,
+                      fillOpacity: 0.5, attk: which_attack} );
+        boom.push( { radius: 14, latitude: 31.9952, longitude: -42.6494,
+                      fillOpacity: 0.5, attk: 'Demo WWW'} );
+        map.bubbles(boom, {
+           popupTemplate: function(geo, data) {
+           return '<div class="hoverinfo">' + data.attk + '</div>';
+        }
+        });
+        // update the scrolling attack div
+        $('#attackdiv').append("<div class='countList'>"+ msg.geo.country_shortname + " (" + msg.ip + ") " +
+                                  " <span style='color:red'>status</span> " +
+                                  " (" + msg.status + ") " +
+                                  " <span style='color:steelblue'>(" + msg.method + ")</span> " +
+                                  "</div>");
+        $('#attackdiv').animate({scrollTop: $('#attackdiv').prop("scrollHeight")}, 50);
+        //var countList = $('.countList').size();
+        //if (countList > 20) { $('#attackdiv').empty(); }
+        }
+
+    } catch(err) {
+        console.log(err)
+    }
+
+    // start the ball rolling!
+    flights.init();
+
+</script>
+
+</body>
+
+</html>
