@@ -1,5 +1,10 @@
-"type","from","to","competition","date","success","dance_type"
-flight,CPH,KEF,Lotto Open,12.12.2007,10:1|L:1|S:1,WTF
-flight,KEF,CPH,Home,15.12.2007,Happy,Training
-train,CPH,AUH,10 Dance Open,15.12.2007,10:sf,WDSF
-train,AUH,CPH,Home,17.12.2007,Happy,Training
+"type","home","from","to","competition","date","success","dance_type"
+flight,false,CPH,KEF,Lotto Open,12.12.2007,10:1|L:1|S:1,WTF
+flight,true,KEF,CPH,Home,15.12.2007,Happy,Training
+train,false,CPH,AUH,10 Dance Open,15.12.2007,10:sf,WDSF
+train,true,AUH,CPH,Home,17.12.2007,Happy,Training
+flight,false,CPH,BNC,10 Dance Open,15.12.2007,10:sf,WDSF
+car,true,BNC,XRY,Home,17.12.2007,Happy,Training
+car,true,XRY,CPH,Home,17.12.2007,Happy,Training
+car,false,CPH,GRS,Lotto Open,12.12.2007,10:1|L:1|S:1,WTF
+flight,true,GRS,CPH,Home,15.12.2007,Happy,Training
