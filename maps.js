@@ -83,8 +83,7 @@ function handleFlights(msg) {
               msg.date,
               msg.competition,
               getAirport(flightdata[f].to).country,
-              msg.to,
-              msg.from];
+              getAirport(flightdata[f].to).country];
     prependFlightRow('flight-tracking', flightList);
 }
 
