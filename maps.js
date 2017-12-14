@@ -52,7 +52,7 @@ function prependFlightRow(id, args) {
 
     for (var i = 0; i < count; i++) {
         var td = document.createElement('td');
-        if (args[i] === args[3]) {
+        if (args[i] === args[2]) {
         console.log(args[i])
         //var path = 'flags/' + args[i] + '.png';
         var path = 'https://www.free-country-flags.com/countries/' + args[i] + '/1/tiny/' + args[i] + '.png';
@@ -79,7 +79,7 @@ function prependFlightRow(id, args) {
     element.insertBefore(tr, element.firstChild);
 }
 function handleFlights(msg) {
-    var flightList = [msg.event_time,
+    var flightList = [
               msg.date,
               msg.competition,
               getAirport(flightdata[f].to).country,
