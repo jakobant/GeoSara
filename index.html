@@ -19,6 +19,18 @@ body {
   top:0px;
   overflow-y: auto;
 }
+    #flightsdiv2 {
+        height:auto;
+        width:250px;
+        position:absolute;
+        bottom:30%;
+        left:10%;
+        padding:15px;
+        border-radius:25px;
+        background:#666161;
+        opacity:0.9;
+        z-index:100;
+    }
 #flightsdiv {
   font-family: monospace;
   font-size:12px;
@@ -26,17 +38,32 @@ body {
   width:50%;
   height:200px;
   color:white;
-  background-color:black;
   padding:7px;
   top:0px;
   overflow-y: auto;
+  opacity:0.9;
+  z-index:100;
+}
+#flight-tracking {
+  font-family: monospace;
+  font-size:12px;
+  position:fixed;
+  width:50%;
+  height:200px;
+  color:white;
+  padding:7px;
+  top:0px;
+  overflow-y: auto;
+  opacity:0.9;
+  z-index:100;
 }
 #container2 {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  max-width:100%;
-  max-height:100%
+  height:100%;
+  width:100%;
+  position:absolute;
+  top:0;
+  bottom:0;
+  z-index:1;
 }
 #about {
   display: hidden;
@@ -62,30 +89,8 @@ body {
   color: white;
 }
 #about {display:none;}
-/* Overlay */
-#simplemodal-overlay {background-color:#000;}
-/* Container */
-#simplemodal-container {height:460px; width:600px; color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
-#simplemodal-container .simplemodal-data {padding:8px;}
-#simplemodal-container code {background:#141414; border-left:3px solid #65B43D; color:#bbb; display:block; font-size:12px; margin-bottom:12px; padding:4px 6px 6px;}
-#simplemodal-container a {color:#ddd;}
-#simplemodal-container a.modalCloseImg {background:url(../img/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
-#simplemodal-container h3 {color:#84b8d9;}
-#simplemodal-container a.modalCloseImg {
-  background:url(x.png) no-repeat; /* adjust url as required */
-  width:25px;
-  height:29px;
-  display:inline;
-  z-index:3200;
-  position:absolute;
-  top:-15px;
-  right:-18px;
-  cursor:pointer;
-}
-</style>
 
-<body>
- <div id="flightsdiv"></div>
+</style>
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
@@ -95,155 +100,30 @@ body {
   <!-- I recommend you host this file on your own, since this will change without warning -->
   <script src="datamaps.world.min.js"></script>
   <div id="container2" ></div>
-<script>
-    window.isActive = true;
-    $(window).focus(function() { this.isActive = true; });
-    $(window).blur(function() { this.isActive = false; });
-    // we maintain a fixed queue of "attacks" via this class
-    function FixedQueue( size, initialValues ){
-      initialValues = (initialValues || []);
-      var queue = Array.apply( null, initialValues );
-      queue.fixedSize = size;
-      queue.push = FixedQueue.push;
-      queue.splice = FixedQueue.splice;
-      queue.unshift = FixedQueue.unshift;
-      FixedQueue.trimTail.call( queue );
-      return( queue );
-    }
-    FixedQueue.trimHead = function(){
-      if (this.length <= this.fixedSize){ return; }
-      Array.prototype.splice.call( this, 0, (this.length - this.fixedSize) );
-    };
-    FixedQueue.trimTail = function(){
-      if (this.length <= this.fixedSize) { return; }
-      Array.prototype.splice.call( this, this.fixedSize, (this.length - this.fixedSize)
-      );
-    };
-    FixedQueue.wrapMethod = function( methodName, trimMethod ){
-      var wrapper = function(){
-        var method = Array.prototype[ methodName ];
-        var result = method.apply( this, arguments );
-        trimMethod.call( this );
-        return( result );
-      };
-      return( wrapper );
-    };
-    FixedQueue.push = FixedQueue.wrapMethod( "push", FixedQueue.trimHead );
-    FixedQueue.splice = FixedQueue.wrapMethod( "splice", FixedQueue.trimTail );
-    FixedQueue.unshift = FixedQueue.wrapMethod( "unshift", FixedQueue.trimTail );
-    var airports = [];
-    d3.csv("airports.csv", function(data) { airports = data;  });
-    d3.csv("flightdata.csv", function(data) { flightdata = data; });
-    function getAirport(iata) { 
-      for(i = 0; i < airports.length; i++){
-        if (airports[i].iata == iata) { return airports[i]; }
-      }
-      return airports[0];
-    }
-    function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-    function getRandomInt(min, max) {return Math.floor(Math.random() * (max - min + 1)) + min;}
-    //console.log(data);
-    //console.log(airports);
-    //console.log(airports[0]);
-    var hits = FixedQueue( 7, [  ] );
-    var boom = FixedQueue( 7, [  ] );
-    var map = new Datamap({
-        scope: 'world',
-        element: document.getElementById('container2'),
-        projection: 'mercator',
-        fills: { defaultFill: 'black', },
-        geographyConfig: {
-          dataUrl: null,
-          hideAntarctica: true,
-          borderWidth: 0.75,
-          borderColor: '#4393c3',
-          popupTemplate: function(geography, data) {
-            return '<div class="hoverinfo" style="color:white;background:black">' +
-                   geography.properties.name + '</div>';
-          },
-          popupOnHover: true,
-          highlightOnHover: false,
-          highlightFillColor: 'black',
-          highlightBorderColor: 'rgba(250, 15, 160, 0.2)',
-          highlightBorderWidth: 2
-        },
-
-      })
-     var f = 0;
-     var randAir = getRandomInt(1, 10);
-     var to_airport = {};
-     var flights = {
-        interval: 2000,
-        init: function(){
-           setTimeout(
-               jQuery.proxy(this.getData, this),
-               this.interval
-           );
-        },
-       getData: function() {
-                var self = this;
-		//if (flightdata[f].home == 'true') { strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = 0.8; } 
-                if (flightdata[f].type == 'flight') { strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.1; } 
-                else if (flightdata[f].type == 'train') { strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.2; }		
-                else if (flightdata[f].type == 'car') { strokeColor = 'red'; strokeWidth = 2; arcSharpness = 1.3; }		
-                else { strokeColor = 'pink'; strokeWidth = 1; arcSharpness = 0.2; } 
-                $('#flightsdiv').append("<div class='countList'>"+flightdata[f].date + " " + flightdata[f].competition + " " +
-                                     getAirport(flightdata[f].to).city + " " + flightdata[f].type +
-                                     " <span style='color:yellow'>" + flightdata[f].success + " "+ flightdata[f].dance_type + "</span> </div>");
-                $('#flightsdiv').animate({scrollTop: $('#flightsdiv').prop("scrollHeight")}, 100);
-		if (flightdata[f].home == 'true') { strokeWidth = 0.7; arcSharpness = 0.8; } 
-		hits.push( { origin : { latitude: getAirport(flightdata[f].from).latitude, longitude: getAirport(flightdata[f].from).longitude },
-                destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
-                map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
-                boom.push( { radius: 15, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
-                      fillOpacity: 1, attk: "bla bla"} );
-                map.bubbles(boom, {
-                   popupTemplate: function(geo, data) {
-                   return '<div>Stuff stuff</div><div class="hoverinfo">' + data.attk + '</div>';
-                } });
-
-                f++;
-		if (f == flightdata.length) { f = 0; }
-
-                /*randColor = getRandomInt(0, 3);
-                randAir = getRandomInt(0, 7000);
-                if (to_airport.lenght < 10) { to_airport == getAirport('KEF'); }
-		from_airport = to_airport;
-                to_airport = airports[randAir];
-                //to_airport = getAirport('BCN');
- 		console.log(from_airport.city +" to " + to_airport.city);
-                var which_attack = from_airport.city +" to " + to_airport.city;
-                hits.push( { origin : { latitude: from_airport.latitude, longitude: from_airport.longitude },
-                destination : { latitude: to_airport.latitude, longitude: to_airport.longitude } } );
-                map.arc(hits, {strokeWidth: 1, strokeColor: 'green'});
-                boom.push( { radius: 15, latitude: to_airport.latitude, longitude: to_airport.longitude,
-                      fillOpacity: 1, attk: which_attack} );
-                map.bubbles(boom, {
-                   popupTemplate: function(geo, data) {
-                   return '<div class="hoverinfo">' + data.attk + '</div>';
-                } });
-                $('#flightsdiv').append("<div class='countList'>"+ from_airport.city + " to " + to_airport.city + "  " +
-                                  " <span style='color:green'>IATA</span> " +
-                                  " " + to_airport.iata + " " +
-                                  " <span style='color:steelblue'>" + from_airport.iata + "</span> " +
-                                  "</div>");
-                $('#flightsdiv').animate({scrollTop: $('#flightsdiv').prop("scrollHeight")}, 100);*/
-                this.init() ;
-	},
-	};
+<script src="maps.js"></script>
 
 
-    // start the ball rolling!
-    flights.init();
+<body>
+<div id="flightsdiv">
 
-</script>
+</div>
+<div class='flightsdiv'>
+    <table id='live-attacks-table'>
+     <thead>
+                            <tr class='flightsdiv'>
+                                <th style='width:20%;'>Date</th>
+                                <th style='width:20%;'>Competition</th>
+                                <th style='width:10%;'></th>
+                                <th style='width:20%;'>From</th>
+                                <th style='width:20%;'>To</th>
+                            </tr>
+     </thead>
+     <tbody id='flight-tracking'>
+                        <!--APPEND TABLE ROWS HERE-->
+     </tbody>
+    </table>
+     </div>
+
 
 </body>
 
