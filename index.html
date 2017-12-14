@@ -57,6 +57,19 @@ body {
   opacity:0.9;
   z-index:100;
 }
+#flight-tracking-head {
+  font-family: monospace;
+  font-size:12px;
+  position:fixed;
+  width:50%;
+  height:200px;
+  color:white;
+  padding:7px;
+  top:0px;
+  overflow-y: auto;
+  opacity:0.9;
+  z-index:100;
+}
 #container2 {
   height:100%;
   width:100%;
@@ -110,13 +123,12 @@ body {
 <div class='flightsdiv'>
     <table id='live-attacks-table'>
      <thead>
-                            <tr class='flightsdiv'>
-                                <th style='width:20%;'>Date</th>
-                                <th style='width:20%;'>Competition</th>
-                                <th style='width:10%;'></th>
-                                <th style='width:20%;'>From</th>
-                                <th style='width:20%;'>To</th>
-                            </tr>
+        <tr id='flight-tracking-head'>
+            <th style='width:20%;'>Date</th>
+            <th style='width:20%;'>Competition</th>
+            <th style='width:10%;'></th>
+            <th style='width:40%;'>To</th>
+        </tr>
      </thead>
      <tbody id='flight-tracking'>
                         <!--APPEND TABLE ROWS HERE-->
