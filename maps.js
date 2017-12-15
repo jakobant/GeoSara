@@ -36,7 +36,8 @@ FixedQueue.splice = FixedQueue.wrapMethod( "splice", FixedQueue.trimTail );
 FixedQueue.unshift = FixedQueue.wrapMethod( "unshift", FixedQueue.trimTail );
 var airports = [];
 d3.csv("airports.csv", function(data) { airports = data;  });
-d3.csv("flightdata.csv", function(data) { flightdata = data; });
+d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vS_YSj972k5Do_gJJ-j_Rxx5-f7gU8ofh1jGNcQyTWiYxioQtDBtuZQyIYSGqEh2ZVuCBpumqL1K3CC/pub?output=csv", function(data) { flightdata = data; });
+//d3.csv("flightdata.csv", function(data) { flightdata = data; });
 function getAirport(iata) {
   for(i = 0; i < airports.length; i++){
     if (airports[i].iata == iata) { return airports[i]; }
@@ -52,10 +53,11 @@ function prependFlightRow(id, args) {
 
     for (var i = 0; i < count; i++) {
         var td = document.createElement('td');
-        if (args[i] === args[2]) {
+        if (i === 2) {
         console.log(args[i])
         //var path = 'flags/' + args[i] + '.png';
-        var path = 'https://www.free-country-flags.com/countries/' + args[i] + '/1/tiny/' + args[i] + '.png';
+        var imgname = args[i].replace(' ', '');
+        var path = 'https://www.free-country-flags.com/countries/' + imgname + '/1/tiny/' + imgname + '.png';
         var img = document.createElement('img');
         img.src = path;
         td.appendChild(img);
@@ -73,10 +75,12 @@ function prependFlightRow(id, args) {
     var rowCount = element.rows.length;
 
     // Only allow 50 rows
-    if (rowCount >= 10) {
-        element.deleteRow(rowCount -1);
+    if (rowCount >= 5) {
+        //element.deleteRow(rowCount -1);
+        element.removeChild(element.childNodes[0]);
     }
-    element.insertBefore(tr, element.firstChild);
+    element.appendChild(tr);
+    //element.insertBefore(tr, element.firstChild);
 }
 function handleFlights(msg) {
     var flightList = [
@@ -87,8 +91,8 @@ function handleFlights(msg) {
     prependFlightRow('flight-tracking', flightList);
 }
 
-var hits = FixedQueue( 15, [  ] );
-var boom = FixedQueue( 15, [  ] );
+var hits = FixedQueue( 7, [  ] );
+var boom = FixedQueue( 7, [  ] );
 var map = new Datamap({
     scope: 'world',
     element: document.getElementById('container2'),
@@ -130,6 +134,8 @@ var flights = {
         else if (flightdata[f].type == 'train') { strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.2; }
         else if (flightdata[f].type == 'car') { strokeColor = 'red'; strokeWidth = 2; arcSharpness = 1.3; }
         else { strokeColor = 'pink'; strokeWidth = 1; arcSharpness = 0.2; }
+        if (flightdata[f].home) { strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = 0.8; }
+        if (flightdata[f].from  == flightdata[f].to) { strokeColor = 'yellow'; strokeWidth = 0; arcSharpness = 0; }
         handleFlights(flightdata[f]);
         //$('#flightsdiv').append("<div class='countList'>"+flightdata[f].date + " " + flightdata[f].competition + " " +
         //    getAirport(flightdata[f].to).city + " " + flightdata[f].type +
@@ -140,7 +146,7 @@ var flights = {
             destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
         map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
         boom.push( { radius: 15, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
-            fillOpacity: 1, text: flightdata[f].competition, img: "saraung.png"} );
+            fillOpacity: 1, text: flightdata[f].competition, img: flightdata[f].img} );
         map.bubbles(boom, {
             popupTemplate: function(geo, data) {
             return '<div class="hoverinfo">' + data.text + '<img src="'+ data.img+'" height=50 width=50></div>';
