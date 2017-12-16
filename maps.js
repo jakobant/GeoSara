@@ -1,3 +1,11 @@
+$(document).ready(function () {
+        $(".preview").hover(function(){
+            $(this).find('img').fadeIn();
+         }, function(){
+            $(this).find('img').fadeOut();
+        });
+    });
+
 window.isActive = true;
 $(window).focus(function() { this.isActive = true; });
 $(window).blur(function() { this.isActive = false; });
@@ -54,45 +62,124 @@ function prependFlightRow(id, args) {
     for (var i = 0; i < count; i++) {
         var td = document.createElement('td');
         if (i === 2) {
-        console.log(args[i])
-        //var path = 'flags/' + args[i] + '.png';
-        var imgname = args[i].replace(' ', '');
-        var path = 'https://www.free-country-flags.com/countries/' + imgname + '/1/tiny/' + imgname + '.png';
-        var img = document.createElement('img');
-        img.src = path;
-        td.appendChild(img);
-        tr.appendChild(td);
+            //var path = 'flags/' + args[i] + '.png';
+            var imgname = args[i].replace('United Arab Emirates', 'UEA').replace(' ', '_');
+            var path = 'https://www.free-country-flags.com/countries/' + imgname + '/1/tiny/' + imgname + '.png';
+            var img = document.createElement('img');
+            img.src = path;
+            td.appendChild(img);
+            tr.appendChild(td);
         } else {
-        var textNode = document.createTextNode(args[i]);
-        td.appendChild(textNode);
-        tr.appendChild(td);
+            var textNode;
+            if (i === 1) {
+                textNode = document.createTextNode(args[i]);
+            } else {
+                textNode = document.createTextNode(args[i]);
+            }
+            td.appendChild(textNode);
+            tr.appendChild(td);
         }
     }
 
     var element = document.getElementById(id);
-    console.log(id);
-    console.log(element);
     var rowCount = element.rows.length;
 
     // Only allow 50 rows
-    if (rowCount >= 5) {
+    if (rowCount >= 50) {
         //element.deleteRow(rowCount -1);
         element.removeChild(element.childNodes[0]);
     }
     element.appendChild(tr);
     //element.insertBefore(tr, element.firstChild);
 }
-function handleFlights(msg) {
+function appendFlightRow(id, flight, num) {
+    var tr = document.createElement('tr');
+    // date
+    var td = document.createElement('td');
+    var textNode = document.createTextNode(flight.date);
+    td.appendChild(textNode);
+    tr.appendChild(td);
+    // flag
+    var td = document.createElement('td');
+    //var imgname = flight.country;
+    var imgname = flight.country.replace('United Arab Emirates', 'UEA').replace(' ', '_');
+    var path = 'https://www.free-country-flags.com/countries/' + imgname + '/1/tiny/' + imgname + '.png';
+    var img = document.createElement('img');
+    img.src = path;
+    td.appendChild(img);
+    tr.appendChild(td);
+    // to country
+    var td = document.createElement('td');
+    var textNode = document.createTextNode(flight.country);
+    td.appendChild(textNode);
+    tr.appendChild(td);
+    // to city
+    var td = document.createElement('td');
+    var textNode = document.createTextNode(flight.city);
+    td.appendChild(textNode);
+    tr.appendChild(td);
+    // competition
+    var td = document.createElement('td');
+    var a = document.createElement('a');
+    //var img = document.createElement('img');
+    //img.src=flight.img;
+    //img.class='hide-image';
+    a.setAttribute("href","#");
+    a.setAttribute("class","showInfo");
+    a.style.color = "white";
+    a.id = num;
+    //var link_text = '<a href="#" class="preview">'+ flight.competition +'<img src="'+ flight.img +'" class="hide-image" style="z-index: 100; position: absolute;"/>';
+    var textNode = document.createTextNode(flight.competition);
+    a.appendChild(textNode)
+    //a.appendChild(img)
+    td.appendChild(a);
+    tr.appendChild(td);
+
+    var element = document.getElementById(id);
+    var rowCount = element.rows.length;
+    // Only allow 50 rows
+    if (rowCount >= 25) {
+        element.removeChild(element.childNodes[0]);
+    }
+    element.appendChild(tr);
+}
+function appendFlightRowSimple(id, flight) {
+    //date
+    var trstart = '<td>'+ flight.date +'</td>';
+    //flag
+    var imgname = flight.country.replace('United Arab Emirates', 'UEA').replace(' ', '_');
+    var path = 'https://www.free-country-flags.com/countries/' + imgname + '/1/tiny/' + imgname + '.png';
+    var trflag = '<td><img src="'+ path +'"></td>';
+    // to country
+    var tocountry = '<td>'+ flight.country +'</td>';
+    // to city
+    var tocity = '<td>'+ flight.city +'</td>';
+    // competition
+    var link_text = '<a href="#" class="preview">'+ flight.competition +'<img src="'+ flight.img +'" class="hide-image" style="z-index: 100; position: absolute;"/>';
+    var compet = '<td>'+ link_text +'</td>';
+
+    var element = document.getElementById(id);
+    var rowCount = element.rows.length;
+    // Only allow 50 rows
+    if (rowCount >= 25) {
+        element.removeChild(element.childNodes[0]);
+    }
+    element.app
+    tr.appendChild(trstart+trflag+tocountry+tocity+compet);
+    element.appendChild(tr);
+}
+function handleFlights(msg, num) {
     var flightList = [
               msg.date,
               msg.competition,
               getAirport(flightdata[f].to).country,
               getAirport(flightdata[f].to).country];
-    prependFlightRow('flight-tracking', flightList);
+    appendFlightRow('flight-tracking', msg, num);
+    //prependFlightRow('flight-tracking', flightList);
 }
 
-var hits = FixedQueue( 7, [  ] );
-var boom = FixedQueue( 7, [  ] );
+var hits = FixedQueue( 20, [  ] );
+var boom = FixedQueue( 20, [  ] );
 var map = new Datamap({
     scope: 'world',
     element: document.getElementById('container2'),
@@ -130,26 +217,31 @@ var flights = {
     getData: function() {
     var self = this;
         //if (flightdata[f].home == 'true') { strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = 0.8; }
-        if (flightdata[f].type == 'flight') { strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.1; }
-        else if (flightdata[f].type == 'train') { strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.2; }
-        else if (flightdata[f].type == 'car') { strokeColor = 'red'; strokeWidth = 2; arcSharpness = 1.3; }
+        if (flightdata[f].type == 'flight') { strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.5; }
+        else if (flightdata[f].type == 'train') { strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.3; }
+        else if (flightdata[f].type == 'car') { strokeColor = 'red'; strokeWidth = 2; arcSharpness = 1.1; }
         else { strokeColor = 'pink'; strokeWidth = 1; arcSharpness = 0.2; }
         if (flightdata[f].home) { strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = 0.8; }
         if (flightdata[f].from  == flightdata[f].to) { strokeColor = 'yellow'; strokeWidth = 0; arcSharpness = 0; }
-        handleFlights(flightdata[f]);
-        //$('#flightsdiv').append("<div class='countList'>"+flightdata[f].date + " " + flightdata[f].competition + " " +
-        //    getAirport(flightdata[f].to).city + " " + flightdata[f].type +
-        //    " <span style='color:yellow'>" + flightdata[f].success + " "+ flightdata[f].dance_type + "</span> </div>");
-        //$('#flightsdiv').animate({scrollTop: $('#flightsdiv').prop("scrollHeight")}, 100);
+        handleFlights(flightdata[f], f);
         if (flightdata[f].home == 'true') { strokeWidth = 0.7; arcSharpness = 0.8; }
         hits.push( { origin : { latitude: getAirport(flightdata[f].from).latitude, longitude: getAirport(flightdata[f].from).longitude },
             destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
         map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
-        boom.push( { radius: 15, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
-            fillOpacity: 1, text: flightdata[f].competition, img: flightdata[f].img} );
+        var res = '';
+        if (flightdata[f].success) { res = 'Rank: '+ flightdata[f].success; }
+        if (flightdata[f].video_id) { var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[f].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[f].video_id + '/0.jpg" alt="" width="90" height="auto" border="0" /></a>'; }
+        else if (flightdata[f].video) { var media_link = '<a href="' + flightdata[f].video + '" target="_blank"><img src="' + flightdata[f].img + '" alt="" width="90" height="auto" border="0" /></a>'; }
+        else if (flightdata[f].img) { var media_link = '<img src="' + flightdata[f].img + '" alt="" width="90" height="auto" border="0" />'; }
+        else { var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="90" height="auto" border="0" /></a>'; }
+        var bub_text = 'Date: '+flightdata[f].date+ '<br>C: ' + flightdata[f].competition+ '<br>Type:' + flightdata[f].dance_type+ '<br>' + res;
+        boom.push( { radius: 8, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
+            fillOpacity: 1, text: bub_text, img: flightdata[f].img, media_link: media_link} );
         map.bubbles(boom, {
             popupTemplate: function(geo, data) {
-            return '<div class="hoverinfo">' + data.text + '<img src="'+ data.img+'" height=50 width=50></div>';
+            return '<div class="hoverpop"><div class="fixed">' + data.text + '</div><div class="flex-item">'+ data.media_link+'</div></div>';
+            //return '<div class="hoverpop"><div class="fixed">' + data.text + '</div><div class="flex-item"><img src="'+ data.img+'" height=75 width=75></div></div>';
+            //<div style="width: 100%; overflow: hidden;">
         } });
 
         f++;
@@ -159,6 +251,27 @@ var flights = {
 	},
 };
 
+
+
+$(document).on("click","#informIP #exit", function (e) {
+    $("#informIP").hide();
+});
+
+$(document).on("click", '#flight-tracking .showInfo', function(e) {
+    console.log($(this));
+    var index = $(this).attr("id");
+    //console.log(flightdata[index]);
+    if (flightdata[index].video_id) { var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[index].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[index].video_id + '/0.jpg" alt="" width="320" height="auto" border="0" /></a>'; }
+    else if (flightdata[index].video) { var media_link = '<a href="' + flightdata[index].video + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" /></a>'; }
+    else if (flightdata[index].img) { var media_link = '<img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" />'; }
+    else { var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="320" height="auto" border="0" /></a>'; }
+    $("#informIP").show();
+    $("#informIP").html( '<button id="exit">Close</button><h3>'+ flightdata[index].competition +'</h3>'+
+    '<div class="hoverpop"><div class="fixed"><br>Country: ' + flightdata[index].country + ' ' + flightdata[index].city +
+    '<br>Dance: ' + flightdata[index].dance_type +
+    '<br>Rank: ' + flightdata[index].success + '</div><div class="flex-item">' +
+    media_link );
+});
 
 // start the ball rolling!
 flights.init();

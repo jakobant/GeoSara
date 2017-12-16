@@ -49,7 +49,7 @@ body {
   font-size:12px;
   position:fixed;
   width:50%;
-  height:200px;
+  height:900px;
   color:white;
   padding:7px;
   top:15px;
@@ -59,10 +59,10 @@ body {
 }
 #flight-tracking-head {
   font-family: monospace;
-  font-size:12px;
+  font-size:11px;
   position:fixed;
   width:50%;
-  height:200px;
+  height:900px;
   color:white;
   padding:7px;
   top:0px;
@@ -73,8 +73,16 @@ body {
 #container2 {
   height:100%;
   width:100%;
-  position:absolute;
+  position:relative;
   top:0;
+  bottom:0;
+  z-index:1;
+}
+#container22 {
+  position: relative;
+  height:90%;
+  width:90%;
+  top:-100;
   bottom:0;
   z-index:1;
 }
@@ -101,8 +109,48 @@ body {
   padding:5px;
   color: white;
 }
-#about {display:none;}
+#informIP {
+    font-family: monospace;
+    font-size:11px;
+    color:white;
+    overflow-y: auto;
+    opacity:0.9;
+    z-index:100;
+    display:none;
+    height:auto;
+    width:550px;
+    position:absolute;
+    bottom:30%;
+    left:10%;
+    padding:15px;
+    border-radius:25px;
+    background:#666161;
+    opacity:0.9;
+}
 
+#informIP #fechar{
+    float:right;
+    left:90%;
+    border-radius:25px;
+    color:red;
+    font-style:oblique;
+}
+#about {display:none;}
+.hoverpop{
+    display: flex;
+}
+.fixed{
+  width: 150px;
+  font-family: monospace;
+  font-size:10px;
+  color:white;
+}
+.flex-item{
+  flex-grow: 1;
+}
+.hide-image {
+   display: none;
+ }
 </style>
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="//d3js.org/d3.v3.min.js"></script>
@@ -117,25 +165,26 @@ body {
 
 
 <body>
-<div id="flightsdiv">
-
-</div>
+<div id="flightsdiv"></div>
 <div class='flightsdiv'>
     <table id='live-attacks-table'>
      <thead>
         <tr id='flight-tracking-head'>
-            <th style='width:20%;'>Date</th>
-            <th style='width:20%;'>Competition</th>
-            <th style='width:10%;'></th>
-            <th style='width:40%;'>To</th>
+            <th style='width:10%;'>Date</th>
+            <th style='width:10%;'>Flag</th>
+            <th style='width:15%;'>Country</th>
+            <th style='width:15%;'>City</th>
+            <th style='width:10%;'>Competition</th>
         </tr>
      </thead>
      <tbody id='flight-tracking'>
                         <!--APPEND TABLE ROWS HERE-->
      </tbody>
     </table>
-     </div>
+</div>
 
+
+<div id='informIP'></div>
 
 </body>
 
