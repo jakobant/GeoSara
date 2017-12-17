@@ -48,18 +48,20 @@ body {
   font-family: monospace;
   font-size:12px;
   position:fixed;
+  width:50%;
   height:900px;
   color:white;
   padding:7px;
   top:15px;
   overflow-y: auto;
   opacity:0.9;
-  z-index:99;
+  z-index:100;
 }
 #flight-tracking-head {
   font-family: monospace;
   font-size:11px;
   position:fixed;
+  width:50%;
   height:900px;
   color:white;
   padding:7px;
@@ -69,8 +71,8 @@ body {
   z-index:100;
 }
 #container2 {
-  height:1024;
-  width:140%;
+  height:100%;
+  width:100%;
   position:relative;
   top:0;
   bottom:0;
@@ -157,6 +159,7 @@ body {
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
   <!-- I recommend you host this file on your own, since this will change without warning -->
+<script src="datamaps.world.min.js"></script>
 
 
 <body>
@@ -180,8 +183,8 @@ body {
 
 
 <div id='informIP'></div>
-<div id="container2" ></div>
-<script src="datamaps.world.min.js"></script>
+  <div id="container2" ></div>
+
 <script src="maps.js"></script>
 
 </body>
