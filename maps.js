@@ -10,7 +10,9 @@ $(document).ready(function () {
 window.isActive = true;
 $(window).focus(function() { this.isActive = true; });
 $(window).blur(function() { this.isActive = false; });
-
+if (window.DeviceOrientationEvent) {
+    window.addEventListener('orientationchange', function() { location.reload(); }, false);
+}
 
 function FixedQueue( size, initialValues ){
     initialValues = (initialValues || []);
