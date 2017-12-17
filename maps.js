@@ -238,6 +238,7 @@ var flights = {
 
 
 $(document).on("click","#informIP #exit", function (e) {
+    $("#informIP").html('');
     $("#informIP").hide();
 });
 
@@ -247,7 +248,8 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
     if (flightdata[index].video_id) {
         //embedded auto play
         //var media_link = '<iframe ' + flightdata[index].video_id + '&autoplay=1></iframe>"';
-        var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[index].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[index].video_id + '/0.jpg" alt="" width="320" height="auto" border="0" /></a>';
+        var media_link = '<iframe width="320" height="auto" src="https://www.youtube.com/embed/'+ flightdata[index].video_id +'?rel=0&amp;autoplay=1&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+        //var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[index].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[index].video_id + '/0.jpg" alt="" width="320" height="auto" border="0" /></a>';
     }
     else if (flightdata[index].video) {
         var media_link = '<a href="' + flightdata[index].video + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" /></a>';
