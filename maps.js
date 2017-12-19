@@ -162,7 +162,7 @@ var map = new Datamap({
     var projection = d3.geo.mercator()
       .center([48.473142, 43.472180])
       //.rotate([4.4, 0])
-      .scale(180)
+      .scale(200)
       //.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
       var path = d3.geo.path()
       .projection(projection);
@@ -195,7 +195,7 @@ var f = 0;
 var randAir = getRandomInt(1, 10);
 var to_airport = {};
 var flights = {
-    interval: 3000,
+    interval: 2000,
     init: function(){
        setTimeout(
            jQuery.proxy(this.getData, this),
@@ -205,7 +205,7 @@ var flights = {
     getData: function() {
     var self = this;
         if (flightdata[f].type == 'flight') {
-            strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.5; }
+            strokeColor = 'green'; strokeWidth = getRandomInt(2, 5);; arcSharpness = 1.5; }
         else if (flightdata[f].type == 'train') {
             strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.3; }
         else if (flightdata[f].type == 'car') {
@@ -223,7 +223,7 @@ var flights = {
 
         hits.push( { origin : { latitude: getAirport(flightdata[f].from).latitude, longitude: getAirport(flightdata[f].from).longitude },
             destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
-        map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 2200});
+        map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
         var res = '';
         if (flightdata[f].success) {
             res = 'Rank: '+ flightdata[f].success; }
