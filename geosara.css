@@ -71,7 +71,24 @@ body {
     background:#666161;
     opacity:0.9;
 }
-
+#informBubble {
+    font-family: monospace;
+    font-size:11px;
+    color:white;
+    overflow-y: auto;
+    opacity:0.9;
+    z-index:100;
+    display:none;
+    height:auto;
+    width:250px;
+    position:absolute;
+    top:0;
+    right:0;
+    padding:15px;
+    border-radius:25px;
+    background:#666161;
+    opacity:0.9;
+}
 #informIP #fechar{
     float:right;
     left:10%;

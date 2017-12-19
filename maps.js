@@ -205,7 +205,7 @@ var flights = {
     getData: function() {
     var self = this;
         if (flightdata[f].type == 'flight') {
-            strokeColor = 'green'; strokeWidth = getRandomInt(2, 5);; arcSharpness = 1.5; }
+            strokeColor = 'green'; strokeWidth = getRandomInt(2, 4);; arcSharpness = 1.5; }
         else if (flightdata[f].type == 'train') {
             strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.3; }
         else if (flightdata[f].type == 'car') {
@@ -244,6 +244,8 @@ var flights = {
             popupTemplate: function(geo, data) {
             return '<div class="hoverpop"><div class="fixed">' + data.text + '</div><div class="flex-item">'+ data.media_link+'</div></div>';
         } });
+        $("#informBubble").show();
+        $("#informBubble").html('<div class="hoverpop"><div class="fixed">' + bub_text + '</div><div class="flex-item">'+ media_link+'</div></div>');
 
         f++;
         if (f == flightdata.length) { f = 0; }
@@ -285,6 +287,7 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
             '<br>Dance: ' + flightdata[index].dance_type +
             '<br>Rank: ' + flightdata[index].success + '</div><div class="flex-item">' +
             media_link );
+
 });
 
 // start the geo flights flowting!
