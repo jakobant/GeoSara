@@ -6,7 +6,10 @@ $(document).ready(function () {
             $(this).find('img').fadeOut();
         });
     });
-
+// Alternatively with jQuery
+    $(window).on('resize', function() {
+       map.resize();
+    });
 window.isActive = true;
 $(window).focus(function() { this.isActive = true; });
 $(window).blur(function() { this.isActive = false; });
@@ -113,10 +116,10 @@ function appendFlightRow(id, flight, num) {
     td.appendChild(img);
     tr.appendChild(td);
     // to country
-    var td = document.createElement('td');
-    var textNode = document.createTextNode(flight.country);
-    td.appendChild(textNode);
-    tr.appendChild(td);
+    //var td = document.createElement('td');
+    //var textNode = document.createTextNode(flight.country);
+    //td.appendChild(textNode);
+    //tr.appendChild(td);
     // to city
     var td = document.createElement('td');
     var textNode = document.createTextNode(flight.city);
@@ -158,21 +161,23 @@ var map = new Datamap({
     scope: 'world',
     element: document.getElementById('container2'),
     setProjection: function(element) {
-    var projection = d3.geo.equirectangular()
+    var projection = d3.geo.mercator()
       .center([48.473142, 43.472180])
       //.rotate([4.4, 0])
-      .scale(260)
+      .scale(170)
       //.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
       var path = d3.geo.path()
       .projection(projection);
-
     return {path: path, projection: projection};
   },
     //projection: 'mercator',
+    //projection: 'orthographic',
+     responsive: true,
     fills: { defaultFill: 'black', },
     geographyConfig: {
       dataUrl: null,
       hideAntarctica: true,
+      hideHawaiiAndAlaska : true,
       borderWidth: 0.75,
       borderColor: '#4393c3',
       popupTemplate: function(geography, data) {
@@ -261,20 +266,20 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
     if (flightdata[index].video_id) {
         //embedded auto play
         //var media_link = '<iframe ' + flightdata[index].video_id + '&autoplay=1></iframe>"';
-        var media_link = '<iframe width="320" height="auto" src="https://www.youtube.com/embed/'+ flightdata[index].video_id +'?rel=0&amp;autoplay=1&amp;controls=1&amp;showinfo=1" frameborder="0" allowfullscreen></iframe>';
+        var media_link = '<iframe width="280" height="auto" src="https://www.youtube.com/embed/'+ flightdata[index].video_id +'?rel=0&amp;autoplay=1&amp;controls=1&amp;showinfo=1" frameborder="0" allowfullscreen></iframe>';
         //var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[index].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[index].video_id + '/0.jpg" alt="" width="320" height="auto" border="0" /></a>';
     }
     else if (flightdata[index].video) {
-        var media_link = '<a href="' + flightdata[index].video + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" /></a>';
+        var media_link = '<a href="' + flightdata[index].video + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="280" height="auto" border="0" /></a>';
     }
     else if (flightdata[index].link) {
-        var media_link = '<a href="' + flightdata[index].link + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" /></a>';
+        var media_link = '<a href="' + flightdata[index].link + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="280" height="auto" border="0" /></a>';
     }
     else if (flightdata[index].img) {
-        var media_link = '<img src="' + flightdata[index].img + '" alt="" width="320" height="auto" border="0" />';
+        var media_link = '<img src="' + flightdata[index].img + '" alt="" width="280" height="auto" border="0" />';
     }
     else {
-        var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="320" height="auto" border="0" /></a>';
+        var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="280" height="auto" border="0" /></a>';
     }
     $("#informIP").show();
     $("#informIP").html( '<button id="exit">Close</button><h3>'+ flightdata[index].competition +'</h3>'+
