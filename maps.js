@@ -153,8 +153,8 @@ function handleFlights(msg, num) {
     appendFlightRow('flight-tracking', msg, num);
 }
 
-var hits = FixedQueue( 20, [  ] );
-var boom = FixedQueue( 20, [  ] );
+var hits = FixedQueue( 10, [  ] );
+var boom = FixedQueue( 10, [  ] );
 var map = new Datamap({
     scope: 'world',
     element: document.getElementById('container2'),

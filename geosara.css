@@ -89,6 +89,22 @@ body {
     background:#666161;
     opacity:0.9;
 }
+#informLegend {
+    font-family: monospace;
+    font-size:11px;
+    color:white;
+    overflow-y: auto;
+    opacity:0.9;
+    z-index:100;
+    height:auto;
+    width:70px;
+    position:absolute;
+    top:0;
+    left:25;
+    padding:15px;
+    border-radius:25px;
+    opacity:0.9;
+}
 #informIP #fechar{
     float:right;
     left:10%;
