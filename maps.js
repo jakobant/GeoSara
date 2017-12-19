@@ -13,9 +13,7 @@ $(document).ready(function () {
 window.isActive = true;
 $(window).focus(function() { this.isActive = true; });
 $(window).blur(function() { this.isActive = false; });
-if (window.DeviceOrientationEvent) {
-    window.addEventListener('orientationchange', function() { location.reload(); }, false);
-}
+//if (window.DeviceOrientationEvent) { window.addEventListener('orientationchange', function() { location.reload(); }, false); }
 
 function FixedQueue( size, initialValues ){
     initialValues = (initialValues || []);
@@ -164,7 +162,7 @@ var map = new Datamap({
     var projection = d3.geo.mercator()
       .center([48.473142, 43.472180])
       //.rotate([4.4, 0])
-      .scale(200)
+      .scale(180)
       //.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
       var path = d3.geo.path()
       .projection(projection);
