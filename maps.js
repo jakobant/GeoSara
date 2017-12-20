@@ -285,6 +285,7 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
     $("#informIP").html( '<button id="exit">Close</button><h3>'+ flightdata[index].competition +'</h3>'+
             '<div class="hoverpop"><div class="fixed"><br>Country: ' + flightdata[index].country + ' ' + flightdata[index].city +
             '<br>Dance: ' + flightdata[index].dance_type +
+            '<br>Country: ' + flightdata[index].country +
             '<br>Rank: ' + flightdata[index].success + '</div><div class="flex-item">' +
             media_link );
 
