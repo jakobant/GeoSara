@@ -192,7 +192,7 @@ var map = new Datamap({
   })
 
 var f = 0;
-var randAir = getRandomInt(1, 10);
+var randAir = getRandomInt(1, 15);
 var to_airport = {};
 var flights = {
     interval: 2000,
@@ -205,7 +205,7 @@ var flights = {
     getData: function() {
     var self = this;
         if (flightdata[f].type == 'flight') {
-            strokeColor = 'green'; strokeWidth = getRandomInt(2, 4);; arcSharpness = 1.5; }
+            strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.5; }
         else if (flightdata[f].type == 'train') {
             strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.3; }
         else if (flightdata[f].type == 'car') {
@@ -226,7 +226,7 @@ var flights = {
         map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
         var res = '';
         if (flightdata[f].success) {
-            res = 'Rank: '+ flightdata[f].success; }
+            res = 'Rank: '+ flightdata[f].success + '<br>'; }
         if (flightdata[f].video_id) {
             var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[f].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[f].video_id + '/0.jpg" alt="" width="90" height="auto" border="0" /></a>'; }
         else if (flightdata[f].video) {
@@ -235,9 +235,9 @@ var flights = {
             var media_link = '<img src="' + flightdata[f].img + '" alt="" width="90" height="auto" border="0" />'; }
         else {
             var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="90" height="auto" border="0" /></a>'; }
-        var bub_text = 'Date: '+flightdata[f].date+ '<br>C: ' + flightdata[f].competition+ '<br>Type:' + flightdata[f].dance_type+ '<br>' + res;
+        var bub_text = 'Date: '+flightdata[f].date+ '<br>C: ' + flightdata[f].competition+ '<br>Type: ' + flightdata[f].dance_type+ '<br>' + res + 'Country: ' + flightdata[f].country;
 
-        boom.push( { radius: 8, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
+        boom.push( { radius: 4, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
             fillOpacity: 1, text: bub_text, img: flightdata[f].img, media_link: media_link} );
 
         map.bubbles(boom, {
