@@ -60,6 +60,7 @@ function getAirport(iata) {
 }
 
 function getRandom(min, max) {return Math.random() * (max - min + 1) + min;}
+function getRandomInt(min, max) {return Math.floor(Math.random() * (max - min + 1)) + min;}
 
 function prependFlightRow(id, args) {
     var tr = document.createElement('tr');
@@ -216,15 +217,15 @@ var flights = {
     getData: function() {
     var self = this;
         if (flightdata[f].type == 'flight') {
-            strokeColor = 'green'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
+            strokeColor = 'rgb(0,'+ getRandomInt(66,255) +',0)'; strokeWidth = 2; arcSharpness = getRandom(0.8, 1.4); }
         else if (flightdata[f].type == 'train') {
-            strokeColor = 'blue'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
+            strokeColor = 'rgb(0,'+ getRandomInt(36,100) +','+ getRandomInt(100,255) +')'; strokeWidth = 2; arcSharpness = getRandom(0.8, 1.4); }
         else if (flightdata[f].type == 'car') {
-            strokeColor = 'red'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
+            strokeColor = 'rgb('+getRandomInt(155,255) +','+ getRandomInt(10,100) +',0)';; strokeWidth = 2; arcSharpness = getRandom(0.8, 1.4); }
         else {
-            strokeColor = 'pink'; strokeWidth = 1; arcSharpness = getRandom(1, 2); }
+            strokeColor = 'pink'; strokeWidth = 1; arcSharpness = getRandom(1, 1.6); }
         if (flightdata[f].home) {
-            strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = getRandom(0.6, 1); }
+            strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = getRandom(0.8, 1.4); }
         if (flightdata[f].from  == flightdata[f].to) {
             strokeColor = 'yellow'; strokeWidth = 0; arcSharpness = 0; }
         if (flightdata[f].home == 'true') {
