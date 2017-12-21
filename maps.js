@@ -114,11 +114,14 @@ function appendFlightRow(id, flight, num) {
     img.src = path;
     td.appendChild(img);
     tr.appendChild(td);
-    // to country
-    //var td = document.createElement('td');
-    //var textNode = document.createTextNode(flight.country);
-    //td.appendChild(textNode);
-    //tr.appendChild(td);
+    // ? video
+    var td = document.createElement('td');
+    if (flight.video || flight.video_id || flight.fbvideo_id || flight.link) {
+        var textNode = document.createTextNode('Yes'); }
+    else  {
+        var textNode = document.createTextNode('');}
+    td.appendChild(textNode);
+    tr.appendChild(td);
     // to city
     var td = document.createElement('td');
     var textNode = document.createTextNode(flight.city);
