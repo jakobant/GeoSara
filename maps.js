@@ -1,3 +1,4 @@
+
 //delete not used
 $(document).ready(function () {
         $(".preview").hover(function(){
@@ -153,8 +154,8 @@ function handleFlights(msg, num) {
     appendFlightRow('flight-tracking', msg, num);
 }
 
-var hits = FixedQueue( 10, [  ] );
-var boom = FixedQueue( 10, [  ] );
+var hits = FixedQueue( 20, [  ] );
+var boom = FixedQueue( 20, [  ] );
 var map = new Datamap({
     scope: 'world',
     element: document.getElementById('container2'),
@@ -195,7 +196,7 @@ var f = 0;
 var randAir = getRandomInt(1, 15);
 var to_airport = {};
 var flights = {
-    interval: 2000,
+    interval: 3000,
     init: function(){
        setTimeout(
            jQuery.proxy(this.getData, this),
@@ -223,12 +224,14 @@ var flights = {
 
         hits.push( { origin : { latitude: getAirport(flightdata[f].from).latitude, longitude: getAirport(flightdata[f].from).longitude },
             destination : { latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude } } );
-        map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 1200});
+        map.arc(hits, {strokeWidth: strokeWidth, strokeColor: strokeColor, arcSharpness: arcSharpness, animationSpeed: 2200});
         var res = '';
         if (flightdata[f].success) {
             res = 'Rank: '+ flightdata[f].success + '<br>'; }
         if (flightdata[f].video_id) {
             var media_link = '<a href="http://www.youtube.com/watch?feature=player_embedded&v=' + flightdata[f].video_id + '" target="_blank"><img src="http://img.youtube.com/vi/' + flightdata[f].video_id + '/0.jpg" alt="" width="90" height="auto" border="0" /></a>'; }
+        //else if (flightdata[f].fbvideo_id) {
+        //    var media_link = '<iframe width="280" height="auto" src="https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=false&container_width=90&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F'+ flightdata[f].fbvideo_id +'%2F&locale=en_US&sdk=joey"></iframe>'; }
         else if (flightdata[f].video) {
             var media_link = '<a href="' + flightdata[f].video + '" target="_blank"><img src="' + flightdata[f].img + '" alt="" width="90" height="auto" border="0" /></a>'; }
         else if (flightdata[f].img) {
@@ -272,6 +275,10 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
     else if (flightdata[index].video) {
         var media_link = '<a href="' + flightdata[index].video + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="280" height="auto" border="0" /></a>';
     }
+    else if (flightdata[index].fbvideo_id) {
+        var media_link = '<iframe width="280" height="auto" src="https://www.facebook.com/v2.3/plugins/video.php?allowfullscreen=true&autoplay=true&container_width=280&href=https%3A%2F%2Fwww.facebook.com%2Fredbull%2Fvideos%2F'+ flightdata[index].fbvideo_id +'%2F&locale=en_US&sdk=joey"></iframe>';
+        //var media_link = '<div class="fb-video" data-href="https://www.facebook.com/video.php?v=311800209229078'+ flightdata[index].fbvideo_id +'" data-width="280" data-autoplay="true" data-allowfullscreen="true"></div>';
+   }
     else if (flightdata[index].link) {
         var media_link = '<a href="' + flightdata[index].link + '" target="_blank"><img src="' + flightdata[index].img + '" alt="" width="280" height="auto" border="0" /></a>';
     }
@@ -287,7 +294,7 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
             '<br>Dance: ' + flightdata[index].dance_type +
             '<br>Country: ' + flightdata[index].country +
             '<br>Rank: ' + flightdata[index].success + '</div><div class="flex-item">' +
-            media_link );
+            media_link + '</div>');
 
 });
 
