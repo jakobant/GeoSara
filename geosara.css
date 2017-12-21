@@ -68,7 +68,7 @@ body {
     left:0%;
     padding:15px;
     border-radius:25px;
-    background:#666161;
+    background:#565151;
     opacity:0.9;
 }
 #informBubble {
@@ -80,13 +80,13 @@ body {
     z-index:100;
     display:none;
     height:auto;
-    width:250px;
+    width:240px;
     position:absolute;
     top:0;
     right:0;
     padding:15px;
     border-radius:25px;
-    background:#666161;
+    background:#565151;
     opacity:0.9;
 }
 #informLegend {
@@ -97,12 +97,13 @@ body {
     opacity:0.9;
     z-index:100;
     height:auto;
-    width:170px;
+    width:140px;
     position:absolute;
     top:0;
     left:25;
     padding:15px;
     border-radius:25px;
+    background:#565151;
     opacity:0.9;
 }
 #informIP #fechar{

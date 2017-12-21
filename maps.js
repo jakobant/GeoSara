@@ -115,13 +115,13 @@ function appendFlightRow(id, flight, num) {
     td.appendChild(img);
     tr.appendChild(td);
     // ? video
-    var td = document.createElement('td');
-    if (flight.video || flight.video_id || flight.fbvideo_id || flight.link) {
-        var textNode = document.createTextNode('Yes'); }
-    else  {
-        var textNode = document.createTextNode('');}
-    td.appendChild(textNode);
-    tr.appendChild(td);
+    //var td = document.createElement('td');
+    //if (flight.video || flight.video_id || flight.fbvideo_id || flight.link) {
+    //    var textNode = document.createTextNode('Yes'); }
+    //else  {
+    //    var textNode = document.createTextNode('');}
+    //td.appendChild(textNode);
+    //tr.appendChild(td);
     // to city
     var td = document.createElement('td');
     var textNode = document.createTextNode(flight.city);
@@ -130,17 +130,25 @@ function appendFlightRow(id, flight, num) {
     // competition
     var td = document.createElement('td');
     var a = document.createElement('a');
-    //var img = document.createElement('img');
-    //img.src=flight.img;
-    //img.class='hide-image';
     a.setAttribute("href","#");
     a.setAttribute("class","showInfo");
     a.style.color = "white";
     a.id = num;
     //var link_text = '<a href="#" class="preview">'+ flight.competition +'<img src="'+ flight.img +'" class="hide-image" style="z-index: 100; position: absolute;"/>';
     var textNode = document.createTextNode(flight.competition);
-    a.appendChild(textNode)
-    //a.appendChild(img)
+    if (flight.video || flight.video_id || flight.fbvideo_id) {
+        var img = document.createElement('img');
+        img.src='images/play.png';
+        img.height='11';
+        a.appendChild(img);
+    }
+    if (flight.link) {
+        var img = document.createElement('img');
+        img.src='images/link.png';
+        img.height='11';
+        a.appendChild(img);
+    }
+    a.appendChild(textNode);
     td.appendChild(a);
     tr.appendChild(td);
 
