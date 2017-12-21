@@ -77,7 +77,7 @@ body {
     color:white;
     overflow-y: auto;
     opacity:0.9;
-    z-index:100;
+    z-index:98;
     display:none;
     height:auto;
     width:240px;
@@ -95,7 +95,7 @@ body {
     color:white;
     overflow-y: auto;
     opacity:0.9;
-    z-index:100;
+    z-index:97;
     height:auto;
     width:140px;
     position:absolute;
