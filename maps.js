@@ -59,7 +59,7 @@ function getAirport(iata) {
   return airports[0];
 }
 
-function getRandomInt(min, max) {return Math.floor(Math.random() * (max - min + 1)) + min;}
+function getRandom(min, max) {return Math.random() * (max - min + 1) + min;}
 
 function prependFlightRow(id, args) {
     var tr = document.createElement('tr');
@@ -196,7 +196,6 @@ var map = new Datamap({
   })
 
 var f = 0;
-var randAir = getRandomInt(1, 15);
 var to_airport = {};
 var flights = {
     interval: 3000,
@@ -209,15 +208,15 @@ var flights = {
     getData: function() {
     var self = this;
         if (flightdata[f].type == 'flight') {
-            strokeColor = 'green'; strokeWidth = 2; arcSharpness = 1.5; }
+            strokeColor = 'green'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
         else if (flightdata[f].type == 'train') {
-            strokeColor = 'blue'; strokeWidth = 2; arcSharpness = 1.3; }
+            strokeColor = 'blue'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
         else if (flightdata[f].type == 'car') {
-            strokeColor = 'red'; strokeWidth = 2; arcSharpness = 1.1; }
+            strokeColor = 'red'; strokeWidth = 2; arcSharpness = getRandom(1, 2); }
         else {
-            strokeColor = 'pink'; strokeWidth = 1; arcSharpness = 0.2; }
+            strokeColor = 'pink'; strokeWidth = 1; arcSharpness = getRandom(1, 2); }
         if (flightdata[f].home) {
-            strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = 0.8; }
+            strokeColor = 'yellow'; strokeWidth = 1; arcSharpness = getRandom(0.6, 1); }
         if (flightdata[f].from  == flightdata[f].to) {
             strokeColor = 'yellow'; strokeWidth = 0; arcSharpness = 0; }
         if (flightdata[f].home == 'true') {
