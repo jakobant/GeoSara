@@ -203,6 +203,7 @@ var map = new Datamap({
     },
 
   })
+  console.log(map.options);
 
 var f = 0;
 var to_airport = {};
@@ -248,7 +249,7 @@ var flights = {
         else if (flightdata[f].img) {
             var media_link = '<img src="' + flightdata[f].img + '" alt="" width="90" height="auto" border="0" />'; }
         else {
-            var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-9/25299069_1563821856986532_6757225713160239883_n.jpg?oh=4076e10d808812731f55e73b0ed6394e&oe=5AB86C06" alt="" width="90" height="auto" border="0" /></a>'; }
+            var media_link = '<a href="https://www.facebook.com/nicoloandsara/" target="_blank"><img src="https://scontent-lhr3-1.xx.fbcdn.net/v/t1.0-1/p200x200/21617637_292475814494851_5223635608251391704_n.jpg?_nc_cat=0&oh=62ad851fc986f24b354c172cb2b275e4&oe=5B6F96ED" alt="" width="90" height="auto" border="0" /></a>'; }
         var bub_text = 'Date: '+flightdata[f].date+ '<br>C: ' + flightdata[f].competition+ '<br>Type: ' + flightdata[f].dance_type+ '<br>' + res + 'Country: ' + flightdata[f].country;
 
         boom.push( { radius: 4, latitude: getAirport(flightdata[f].to).latitude, longitude: getAirport(flightdata[f].to).longitude,
@@ -307,6 +308,18 @@ $(document).on("click", '#flight-tracking .showInfo', function(e) {
             '<br>Rank: ' + flightdata[index].success + '</div><div class="flex-item">' +
             media_link + '</div>');
 
+    //setProjection: {function(element) {
+    var projection = d3.geo.mercator()
+      .center([19, -3])
+      .rotate([4.4, 0])
+      .scale(400)
+      //.translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+    var path = d3.geo.path()
+      .projection(projection);
+    //return {path: path, projection: projection};
+  //}}
+    console.log(map.options)
+    //$("#container2").datamaps.options( {projectionConfig: [0,0]});
 });
 
 // start the geo flights flowting!
